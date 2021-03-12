@@ -2,18 +2,7 @@ version: '3.7'
 
 services:
 
-  #webserver:
-  #  image: nginx:alpine
-  #  container_name: webserver
-  #  restart: unless-stopped
-  #  tty: true
-  #  ports:
-  #    - "80:8001"
-  #    - "443:443"
-  #  networks:
-  #    - app-network
-
-  app:
+  APPNAME:
     build: .
     command: gunicorn PROJECTNAME.wsgi:application --bind 0.0.0.0:8001
     volumes:
@@ -23,17 +12,17 @@ services:
     env_file:
       - .env
     depends_on: 
-      - app-db
+      - APPNAME-db
     networks:
-      - app-network
+      - APPNAME-network
 
-  app-db:
+  APPNAME-DB:
     build: ./database
     command: mysqld --default-authentication-plugin=mysql_native_password
     expose:
       - 3306
-    volumes:
-      - ./database/backup:/var/lib/mysql
+    #volumes:
+    #  - ./database/backup:/var/lib/mysql
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=django_secret_pass
@@ -41,9 +30,9 @@ services:
       - MYSQL_USER=django_user
       - MYSQL_PASSWORD=django_password
     networks:
-      - app-network
+      - APPNAME-network
 
-  app-db-test:
+  APPNAME-DB-test:
     build: ./database
     command: mysqld --default-authentication-plugin=mysql_native_password
     expose:
@@ -55,8 +44,8 @@ services:
       - MYSQL_USER=django_user_test
       - MYSQL_PASSWORD=django_password_test
     networks:
-      - app-network
+      - APPNAME-network
 
 networks:
-  app-network:
+  APPNAME-network:
     driver: bridge
