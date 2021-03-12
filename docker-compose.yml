@@ -12,11 +12,11 @@ services:
     env_file:
       - .env
     depends_on: 
-      - APPNAME-DB
+      - APPNAME-db
     networks:
       - APPNAME-network
 
-  APPNAME-DB:
+  APPNAME-db:
     build: ./database
     command: mysqld --default-authentication-plugin=mysql_native_password
     expose:
@@ -32,7 +32,7 @@ services:
     networks:
       - APPNAME-network
 
-  APPNAME-DB-test:
+  APPNAME-db-test:
     build: ./database
     command: mysqld --default-authentication-plugin=mysql_native_password
     expose:
